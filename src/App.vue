@@ -9,8 +9,16 @@
         <button @click="handleOrder('salary')">Order by salary</button>
         <button @click="handleOrder('location')">Order by location</button>
       </div>
+      <div v-if="showSalaryInput" class="salary">
+        <label>Salario minimo</label>
+        <input v-model.number="salary">
+        <button @click="filterByMinSalary()">Filtrar</button>
+      </div>
     </header>
-    <JobsList :jobs="jobs" :order="order" />
+    <JobsList
+      :jobs="jobs" :order="order" :min-salary="minSalary" :show-min-salary="showMinSalary"
+      @clean-filter="cleanFilter"
+    />
   </div>
 </template>
 
@@ -33,13 +41,28 @@ export default defineComponent({
       { title: 'fisherman', location: 'lake hylia', salary: 21000, id: '4' },
       { title: 'prison guard', location: 'gerudo valley', salary: 32000, id: '5' }
     ])
-    const order = ref<OrderTerm>('title')
+    const showMinSalary = ref<boolean>(false)
+    const showSalaryInput = ref<boolean>(true)
+    const order = ref<OrderTerm>('salary')
+    const salary = ref<number>(0)
+    const minSalary = ref<number>(0)
 
     const handleOrder = (term: OrderTerm) => {
       order.value = term
     }
+    const filterByMinSalary = () => {
+      minSalary.value = salary.value
+      showSalaryInput.value = false
+      showMinSalary.value = true
+    }
+    const cleanFilter = () => {
+      minSalary.value = 0
+      salary.value = 0
+      showMinSalary.value = false
+      showSalaryInput.value = true
+    }
 
-    return {jobs,order,handleOrder}
+    return {jobs,order,salary,minSalary,showMinSalary,showSalaryInput,filterByMinSalary,handleOrder,cleanFilter}
   },
 
 });
@@ -68,6 +91,17 @@ export default defineComponent({
   }
   header h1 {
     font-size: 3em;
+  }
+  .salary {
+    margin-top: 25px;
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    align-items: center;
+  }
+  .salary input {
+    padding: 5px;
+    max-width: 100px;
   }
 
 </style>

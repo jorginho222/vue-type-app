@@ -1,12 +1,15 @@
 <template>
   <div class="job-list">
     <p>Ordered by {{ order }}</p>
+    <div v-if="showMinSalary"  class="starting-salary">
+      <p>Salary starting from $ {{ minSalary }}</p>
+      <button @click="$emit('clean-filter')">X</button>
+    </div>
     <transition-group name="list" tag="ul">
-      <li v-for="job in orderedJobs" :key="job.id">
+      <li v-for="job in orderedJobsBySalary" :key="job.id">
         <h2>{{ job.title }} in {{ job.location }}</h2>
         <div class="salary">
-          <img width="75" src="src/assets/rupee.svg" alt="rupia-icon">
-          <p>{{ job.salary }} rupias</p>
+          <p>$ {{ job.salary }}</p>
         </div>
         <div class="description">
           <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum</p>
@@ -30,6 +33,14 @@ export default defineComponent({
     order: {
       required: true,
       type: String as PropType<OrderTerm>
+    },
+    minSalary: {
+      required: true,
+      type: Number
+    },
+    showMinSalary: {
+      required: true,
+      type: Boolean
     }
   },
   setup(props) {
@@ -42,7 +53,11 @@ export default defineComponent({
       })
     })
 
-    return {orderedJobs}
+    const orderedJobsBySalary = computed(() => {
+      return orderedJobs.value.filter(job => job.salary >= props.minSalary)
+    })
+
+    return {orderedJobsBySalary}
   }
 })
 
@@ -77,6 +92,14 @@ li {
 }
 .list-move {
   transition: all 0.75s;
+}
+.starting-salary {
+  display: flex;
+  justify-content: space-between;
+  gap: 5px;
+  padding: 1px 10px;
+  border: solid 2px #0e2c8a;
+  background: #d5f0ff;
 }
 
 </style>
