@@ -12,7 +12,7 @@
       <div v-if="showSalaryInput" class="salary">
         <label>Salario minimo</label>
         <input v-model.number="salary">
-        <button @click="filterByMinSalary()">Filtrar</button>
+        <button @click="filterByMinSalary">Filtrar</button>
       </div>
     </header>
     <JobsList
@@ -22,50 +22,40 @@
   </div>
 </template>
 
-<script lang="ts">
-import {defineComponent, ref} from 'vue';
+<script setup lang="ts">
+import {ref} from 'vue';
 import Job from "@/types/job";
 import JobsList from "@/components/JobsList.vue";
 import OrderTerm from "@/types/OrderTerm";
 
-export default defineComponent({
-  name: 'App',
-  components: {
-    JobsList
-  },
-  setup() {
-    const jobs = ref<Job[]>([
-      { title: 'farm worker', location: 'lon lon ranch', salary: 30000, id: '1' },
-      { title: 'quarryman', location: 'death mountain', salary: 40000, id: '2' },
-      { title: 'flute player', location: 'the lost woods', salary: 35000, id: '3' },
-      { title: 'fisherman', location: 'lake hylia', salary: 21000, id: '4' },
-      { title: 'prison guard', location: 'gerudo valley', salary: 32000, id: '5' }
-    ])
-    const showMinSalary = ref<boolean>(false)
-    const showSalaryInput = ref<boolean>(true)
-    const order = ref<OrderTerm>('salary')
-    const salary = ref<number>(0)
-    const minSalary = ref<number>(0)
+const jobs = ref<Job[]>([
+  { title: 'farm worker', location: 'lon lon ranch', salary: 30000, id: '1' },
+  { title: 'quarryman', location: 'death mountain', salary: 40000, id: '2' },
+  { title: 'flute player', location: 'the lost woods', salary: 35000, id: '3' },
+  { title: 'fisherman', location: 'lake hylia', salary: 21000, id: '4' },
+  { title: 'prison guard', location: 'gerudo valley', salary: 32000, id: '5' }
+])
+const showMinSalary = ref(false)
+const showSalaryInput = ref(true)
+const order = ref<OrderTerm>('salary')
+const salary = ref(0)
+const minSalary = ref(0)
 
-    const handleOrder = (term: OrderTerm) => {
-      order.value = term
-    }
-    const filterByMinSalary = () => {
-      minSalary.value = salary.value
-      showSalaryInput.value = false
-      showMinSalary.value = true
-    }
-    const cleanFilter = () => {
-      minSalary.value = 0
-      salary.value = 0
-      showMinSalary.value = false
-      showSalaryInput.value = true
-    }
 
-    return {jobs,order,salary,minSalary,showMinSalary,showSalaryInput,filterByMinSalary,handleOrder,cleanFilter}
-  },
-
-});
+const handleOrder = (term: OrderTerm) => {
+  order.value = term
+}
+const filterByMinSalary = () => {
+  minSalary.value = salary.value
+  showSalaryInput.value = false
+  showMinSalary.value = true
+}
+const cleanFilter = () => {
+  minSalary.value = 0
+  salary.value = 0
+  showMinSalary.value = false
+  showSalaryInput.value = true
+}
 </script>
 
 <style>
